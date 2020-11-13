@@ -1,4 +1,4 @@
-package heartbeat
+package heartbeatsh
 
 import (
 	"fmt"
@@ -7,16 +7,16 @@ import (
 )
 
 type Client struct {
-	proto string
-	host string
+	proto     string
+	host      string
 	Subdomain string
 }
 
-// Create a new client for the server at {subdomain}.heartbeat.sh
+// Create a new client for the server at {subdomain}.heartbeatsh.sh
 func NewClient(subdomain string) Client {
 	return Client{
 		proto:     "https",
-		host:      "heartbeat.sh",
+		host:      "heartbeatsh.sh",
 		Subdomain: subdomain,
 	}
 }
