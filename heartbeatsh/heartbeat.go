@@ -16,7 +16,7 @@ type Client struct {
 func NewClient(subdomain string) Client {
 	return Client{
 		proto:     "https",
-		host:      "heartbeatsh.sh",
+		host:      "heartbeat.sh",
 		Subdomain: subdomain,
 	}
 }
