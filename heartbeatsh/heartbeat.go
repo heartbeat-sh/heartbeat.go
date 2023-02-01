@@ -12,7 +12,7 @@ type Client struct {
 	Subdomain string
 }
 
-// Create a new client for the server at {subdomain}.heartbeatsh.sh
+// NewClient creates a new client for the server at {subdomain}.heartbeatsh.sh
 func NewClient(subdomain string) Client {
 	return Client{
 		proto:     "https",
@@ -21,7 +21,7 @@ func NewClient(subdomain string) Client {
 	}
 }
 
-// Send a beat. To let the server choose timeouts, pass nil values to the timeout arguments.
+// SendBeat sends a beat. To let the server choose timeouts, pass nil values to the timeout arguments.
 // Returns any error that might be encountered with sending the http request.
 func (c *Client) SendBeat(name string, warningTimeout *time.Duration, errorTimeout *time.Duration) error {
 	var query string
@@ -47,7 +47,7 @@ func (c *Client) SendBeat(name string, warningTimeout *time.Duration, errorTimeo
 	return err
 }
 
-// Delete a beat.
+// DeleteBeat deletes a beat.
 // Returns any error that might be encountered with sending the http request.
 func (c *Client) DeleteBeat(name string) error {
 	url := fmt.Sprintf("%v://%v.%v/beat/%v", c.proto, c.Subdomain, c.host, name)
