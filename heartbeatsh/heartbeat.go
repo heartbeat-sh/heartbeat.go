@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+var httpClient *http.Client
+
+func init() {
+	httpClient = &http.Client{
+		Timeout: time.Second * 5,
+	}
+}
+
 type Client struct {
 	proto     string
 	host      string
@@ -42,8 +50,7 @@ func (c *Client) SendBeat(name string, warningTimeout *time.Duration, errorTimeo
 		return err
 	}
 
-	client := http.Client{}
-	_, err = client.Do(req)
+	_, err = httpClient.Do(req)
 	return err
 }
 
@@ -55,7 +62,6 @@ func (c *Client) DeleteBeat(name string) error {
 	if err != nil {
 		return err
 	}
-	client := http.Client{}
-	_, err = client.Do(req)
+	_, err = httpClient.Do(req)
 	return err
 }
