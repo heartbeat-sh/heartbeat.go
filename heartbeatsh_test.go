@@ -9,6 +9,7 @@ import (
 const subdomain = "test"
 const createTestHb = "go"
 const nilTestHb = "go-nils"
+const typedNilTestHb = "go-typed-nils"
 const deleteTestHb = "go-delete"
 
 func TestNewClient(t *testing.T) {
@@ -30,6 +31,13 @@ func TestSendBeat(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error %v", err)
 	}
+
+	var noTimeout *time.Duration
+	err = client.SendBeat(typedNilTestHb, noTimeout, noTimeout)
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
 	err = client.SendBeat(deleteTestHb, nil, nil)
 	if err != nil {
 		t.Errorf("Unexpected error %v", err)
