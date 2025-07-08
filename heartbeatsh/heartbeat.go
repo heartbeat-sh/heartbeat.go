@@ -10,11 +10,13 @@ import (
 )
 
 var httpClient *http.Client
+var timeRegex *regexp.Regexp
 
 func init() {
 	httpClient = &http.Client{
 		Timeout: time.Second * 5,
 	}
+	timeRegex = regexp.MustCompile(`^([0-1][0-9]|2[0-3]):([0-5][0-9])$`)
 }
 
 type Client struct {
@@ -103,7 +105,7 @@ func (c *Client) DeleteBeat(name string) error {
 // validateTimeFormat validates that a time string is in "HH:MM" format
 // Returns an error if the format is invalid or the time values are out of range
 func validateTimeFormat(timeStr string) error {
-	timeRegex := regexp.MustCompile(`^([0-1][0-9]|2[0-3]):([0-5][0-9])$`)
+
 	if !timeRegex.MatchString(timeStr) {
 		return errors.New("time must be in HH:MM format (e.g., '09:00', '17:30')")
 	}

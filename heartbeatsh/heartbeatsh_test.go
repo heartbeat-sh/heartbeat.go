@@ -1,10 +1,8 @@
-package heartbeat_go
+package heartbeatsh
 
 import (
 	"testing"
 	"time"
-
-	"github.com/heartbeat-sh/heartbeat.go/heartbeatsh"
 )
 
 const subdomain = "test"
@@ -15,14 +13,14 @@ const deleteTestHb = "go-delete"
 const goTimesTestHb = "go-times"
 
 func TestNewClient(t *testing.T) {
-	client := heartbeatsh.NewClient(subdomain)
+	client := NewClient(subdomain)
 	if client.Subdomain != subdomain {
 		t.Errorf("Got %s, wanted %s", client.Subdomain, subdomain)
 	}
 }
 
 func TestSendBeat(t *testing.T) {
-	client := heartbeatsh.NewClient(subdomain)
+	client := NewClient(subdomain)
 	minute := time.Minute
 	hour := time.Hour
 	err := client.SendBeat(createTestHb, &minute, &hour)
@@ -47,7 +45,7 @@ func TestSendBeat(t *testing.T) {
 }
 
 func TestSendBeatWithTimes(t *testing.T) {
-	c := heartbeatsh.NewClient(subdomain)
+	c := NewClient(subdomain)
 	minute := time.Minute
 	hour := time.Hour
 
@@ -83,8 +81,25 @@ func TestSendBeatWithTimes(t *testing.T) {
 	}
 }
 
+func TestValidateTimeFormat(t *testing.T) {
+	validTimes := []string{"09:00", "17:30", "00:00", "23:59"}
+	invalidTimes := []string{"9:00", "17:5", "24:00", "12:60", "12:61", "12:5a"}
+
+	for _, timeStr := range validTimes {
+		if err := validateTimeFormat(timeStr); err != nil {
+			t.Errorf("Expected valid time format for %s, got error %v", timeStr, err)
+		}
+	}
+
+	for _, timeStr := range invalidTimes {
+		if err := validateTimeFormat(timeStr); err == nil {
+			t.Errorf("Expected error for invalid time format %s, got nil", timeStr)
+		}
+	}
+}
+
 func TestDeleteBeat(t *testing.T) {
-	c := heartbeatsh.NewClient(subdomain)
+	c := NewClient(subdomain)
 	err := c.DeleteBeat(deleteTestHb)
 	if err != nil {
 		t.Errorf("Unexpected error %v", err)
