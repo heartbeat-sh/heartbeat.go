@@ -1,9 +1,10 @@
 package heartbeat_go
 
 import (
-	"github.com/heartbeat-sh/heartbeat.go/heartbeatsh"
 	"testing"
 	"time"
+
+	"github.com/heartbeat-sh/heartbeat.go/heartbeatsh"
 )
 
 const subdomain = "test"
@@ -11,6 +12,7 @@ const createTestHb = "go"
 const nilTestHb = "go-nils"
 const typedNilTestHb = "go-typed-nils"
 const deleteTestHb = "go-delete"
+const goTimesTestHb = "go-times"
 
 func TestNewClient(t *testing.T) {
 	client := heartbeatsh.NewClient(subdomain)
@@ -41,6 +43,43 @@ func TestSendBeat(t *testing.T) {
 	err = client.SendBeat(deleteTestHb, nil, nil)
 	if err != nil {
 		t.Errorf("Unexpected error %v", err)
+	}
+}
+
+func TestSendBeatWithTimes(t *testing.T) {
+	c := heartbeatsh.NewClient(subdomain)
+	minute := time.Minute
+	hour := time.Hour
+
+	err := c.SendBeatWithTimes(createTestHb, &minute, &hour, "09:00", "17:00")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	err = c.SendBeatWithTimes(nilTestHb, nil, nil, "", "")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	var noTimeout *time.Duration
+	err = c.SendBeatWithTimes(typedNilTestHb, noTimeout, noTimeout, "", "")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	err = c.SendBeatWithTimes(deleteTestHb, nil, nil, "", "")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	err = c.SendBeatWithTimes(goTimesTestHb, &minute, &hour, "09:00", "17:00")
+	if err != nil {
+		t.Errorf("Unexpected error %v", err)
+	}
+
+	err = c.SendBeatWithTimes(goTimesTestHb, &minute, &hour, "09", "17")
+	if err == nil {
+		t.Errorf("Expected error for invalid time format, got nil")
 	}
 }
 
